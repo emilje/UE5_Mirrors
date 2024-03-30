@@ -112,7 +112,7 @@ void ACVrMirror::Tick(const float DeltaTime)
 	Super::Tick(DeltaTime);
 	CaptureScene();
 	FString Bla = GetActorNameOrLabel() + ", " + FString::FromInt(NumActiveCaptureTriggers);
-	GEngine->AddOnScreenDebugMessage(FMath::Rand(), -1, FColor::Purple, Bla);
+	// GEngine->AddOnScreenDebugMessage(FMath::Rand(), -1, FColor::Purple, Bla);
 }
 
 void ACVrMirror::Init()
@@ -127,9 +127,9 @@ void ACVrMirror::Init()
 	RenderTargetLeftEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
 	RenderTargetRightEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
 
-	// GEngine->AddOnScreenDebugMessage(15, 5, FColor::Red, Resolution.ToString());
-	// GEngine->AddOnScreenDebugMessage(16, 5, FColor::Red, FString::FromInt(RenderTargetWidth * RenderTargetHeight));
-	// GEngine->AddOnScreenDebugMessage(17, 5, FColor::Red, bIsMobileMultiView ? "Multi view on" : "Multi view off");
+	GEngine->AddOnScreenDebugMessage(15, 5, FColor::Red, Resolution.ToString());
+	GEngine->AddOnScreenDebugMessage(16, 5, FColor::Red, FString::FromInt(RenderTargetWidth * RenderTargetHeight));
+	GEngine->AddOnScreenDebugMessage(17, 5, FColor::Red, bIsMobileMultiView ? "Multi view on" : "Multi view off");
 
 	SceneCaptureLeftEye->TextureTarget = RenderTargetLeftEye;
 	SceneCaptureLeftEye->FOVAngle = HorizontalFov;
@@ -231,7 +231,7 @@ void ACVrMirror::CaptureScene()
 	MaterialInstanceDynamic->SetVectorParameterValue("ZCameraToWorldVector", ActiveCamera->GetUpVector());
 
 	const FVector MirrorForwardVector = GetActorForwardVector();
-	const FVector ClipPlaneBase = GetActorLocation();
+	const FVector ClipPlaneBase = GetActorLocation()-MirrorForwardVector;
 	const FVector ClipPlaneNormal = MirrorForwardVector;
 
 	const FTransform MirroredCameraTransform = MirrorCamera(ActiveCamera->GetComponentTransform());
@@ -309,8 +309,12 @@ void ACVrMirror::CheckDynamicResolution()
 
 		RenderTargetLeftEye =
 			UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
+		RenderTargetLeftEye->AddressX = TA_Clamp;
+		RenderTargetLeftEye->AddressY = TA_Clamp;
 		RenderTargetRightEye = UKismetRenderingLibrary::CreateRenderTarget2D(
 			this, RenderTargetWidth, RenderTargetHeight);
+		RenderTargetRightEye->AddressX = TA_Clamp;
+		RenderTargetRightEye->AddressY = TA_Clamp;
 
 		SceneCaptureLeftEye->TextureTarget = RenderTargetLeftEye;
 		SceneCaptureRightEye->TextureTarget = RenderTargetRightEye;
