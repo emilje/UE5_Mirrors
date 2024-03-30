@@ -136,7 +136,6 @@ private:
 	float IpdHalfDistanceCm;
 	FVector LastTraceCameraPosition = FVector::ZeroVector;
 	bool bIsMobileMultiView = false;
-	bool bIsWithinCaptureBox = true;
 	bool bIsUsingCaptureTriggers = false;
 	int32 NumActiveCaptureTriggers = 0;
 
