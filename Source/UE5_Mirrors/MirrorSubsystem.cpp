@@ -23,9 +23,36 @@ void UMirrorSubsystem::OnMirrorDestroyed(ACMirror* DestroyedMirror)
 	{
 		if (Mirror)
 		{
-			Mirror->SceneCapture->HiddenActors.Remove(Mirror);
+			Mirror->SceneCapture->HiddenActors.Remove(DestroyedMirror);
 		}
 	}
+}
+
+int32 UMirrorSubsystem::GetMirrorsNumber() const
+{
+	return WorldMirrors.Num();
+}
+
+void UMirrorSubsystem::DestroyAllMirrors()
+{
+	TArray<ACMirror*> MirrorsForDestruction;
+	for (const auto Mirror : WorldMirrors)
+	{
+		if (Mirror)
+		{
+			MirrorsForDestruction.Add(Mirror);
+		}
+	}
+
+	for (const auto Mirror : MirrorsForDestruction)
+	{
+		if (Mirror)
+		{
+			Mirror->Destroy();
+		}
+	}
+
+	WorldMirrors.Empty();
 }
 
 void UMirrorSubsystem::UpdateActiveCamera(UCameraComponent* NewActiveCamera) const

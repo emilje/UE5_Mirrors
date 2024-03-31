@@ -39,9 +39,9 @@ protected:
 	UPROPERTY(EditAnywhere, meta=(DisplayName="Stereoscopic"))
 	bool bIsStereoscopic = false;
 
-	// Will cull objects that should not be seen in the reflection
+	// Will cull objects that should not be seen in the reflection.
 	UPROPERTY(EditAnywhere, meta=(DisplayName="Culling"))
-	bool bCullingEnabled = true;
+	bool bCullingEnabled = false;
 
 	// Visualize culling planes. Only for debugging.
 	UPROPERTY(EditAnywhere, meta=(EditCondition=bCullingEnabled), DisplayName="Display culling planes")
@@ -55,16 +55,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MirrorCullingTraceDistance = 10000;
 
-	// Increasing this will increase the mirror's fov used for culling. If you find objects disappearing while they should still be visible in the reflection, try increasing this number.
+	// Increasing this will increase the mirror's fov used for culling. If you find objects disappearing while they should still be visible in the reflection, try slightly increasing this number.
 	UPROPERTY(EditAnywhere, meta=(ClampMin=1, ClampMax=2))
 	float MirrorCullingBufferMultiplier = 1;
 
 	// Use this for far away actors which might not be hit by the trace. Skybox is a good example.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> DontCullActors;
 
 	// Resolution capture multiplier. 1 for full resolution capture. More than 1 is oversampling - it can increase sharpness at a high cost.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin=0.1, ClampMax=2, ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin=0.1, ClampMax=2))
 	float CaptureQuality = 1;
 
 	// Captures won't trigger when this distance is exceeded.
@@ -96,8 +96,12 @@ protected:
 	float CustomIpdCm = 0;
 
 	// Mirror will capture as long as we are within one of these boxes.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<ATriggerBox>> CaptureTriggers;
+
+	// Display number of active triggers for this mirror.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDisplayNumOfActiveTriggers = false;
 
 	UPROPERTY()
 	TObjectPtr<USceneComponent> SceneRoot;

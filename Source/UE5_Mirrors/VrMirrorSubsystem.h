@@ -20,6 +20,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void UpdateActiveCamera(UCameraComponent* NewActiveCamera) const;
 
+	UFUNCTION(BlueprintCallable)
+	void DestroyAllMirrors();
+
 private:
 	UPROPERTY()
 	TArray<ACVrMirror*> WorldMirrors;

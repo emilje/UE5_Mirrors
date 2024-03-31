@@ -15,10 +15,16 @@ class UE5_MIRRORS_API UMirrorSubsystem : public UGameInstanceSubsystem
 public:
 	void OnMirrorCreated(ACMirror* NewMirror);
 	void OnMirrorDestroyed(ACMirror* DestroyedMirror);
-
+	
 protected:
 	UFUNCTION(BlueprintCallable)
 	void UpdateActiveCamera(UCameraComponent* NewActiveCamera) const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetMirrorsNumber() const;
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyAllMirrors();
 
 private:
 	UPROPERTY()

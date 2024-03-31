@@ -29,7 +29,7 @@ protected:
 
 	// Will cull objects that should not be seen in the reflection
 	UPROPERTY(EditAnywhere, meta=(DisplayName="Culling"))
-	bool bCullingEnabled = true;
+	bool bCullingEnabled = false;
 
 	// Visualize culling planes. Only for debugging.
 	UPROPERTY(EditAnywhere, meta=(EditCondition=bCullingEnabled), DisplayName="Display culling planes")
@@ -43,7 +43,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MirrorCullingTraceDistance = 10000;
 
-	// Increasing this will increase the mirror's fov used for culling. If you find objects disappearing while they should still be visible in the reflection, try increasing this number.
+	// Increasing this will increase the mirror's fov used for culling. If you find objects disappearing while they should still be visible in the reflection, try slightly increasing this number.
 	UPROPERTY(EditAnywhere, meta=(ClampMin=1, ClampMax=2))
 	float MirrorCullingBufferMultiplier = 1;
 
@@ -78,10 +78,17 @@ protected:
 	// Capture resolution will be at lowest quality at and beyond this distance.
 	UPROPERTY(EditAnywhere, meta=(EditCondition=bEnableDynamicCaptureResolution))
 	float DynamicCaptureRangeEnd = 2500;
+	// Capture resolution will be at lowest quality at and beyond this distance.
+	UPROPERTY(EditAnywhere, meta=(EditCondition=bEnableDynamicCaptureResolution))
+	bool bDisplayDynamicCaptureQuality = false;
 
 	// Mirror will capture as long as we are within one of these boxes.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<ATriggerBox>> CaptureTriggers;
+
+	// Display number of active triggers for this mirror.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDisplayNumOfActiveTriggers = false;
 	
 	UPROPERTY()
 	TObjectPtr<USceneComponent> SceneRoot;

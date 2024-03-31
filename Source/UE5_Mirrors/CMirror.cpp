@@ -23,8 +23,6 @@ ACMirror::ACMirror()
 	SceneCapture->bEnableClipPlane = true;
 	SceneCapture->bCaptureEveryFrame = false;
 	SceneCapture->bCaptureOnMovement = false;
-
-	InitialCaptureQuality = CaptureQuality;
 }
 
 void ACMirror::OnViewportResize(FViewport* Viewport, uint32)
@@ -57,6 +55,7 @@ void ACMirror::BeginPlay()
 		}
 	}
 
+	InitialCaptureQuality = CaptureQuality;
 	FindActiveCamera();
 	SetupCaptureTriggers();
 
@@ -92,8 +91,13 @@ void ACMirror::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CaptureScene();
-	FString Bla = GetActorNameOrLabel() + ", " + FString::FromInt(NumActiveCaptureTriggers);
-	GEngine->AddOnScreenDebugMessage(FMath::Rand(), -1, FColor::Purple, Bla);
+
+	if (bDisplayNumOfActiveTriggers)
+	{
+		const FString MirrorNameAndTriggerAmount = GetActorNameOrLabel() + ", " + FString::FromInt(
+			NumActiveCaptureTriggers);
+		GEngine->AddOnScreenDebugMessage(6, -1, FColor::Purple, MirrorNameAndTriggerAmount);
+	}
 }
 
 void ACMirror::Init()
@@ -154,7 +158,7 @@ void ACMirror::FindActiveCamera()
 				}
 				else
 				{
-					GEngine->AddOnScreenDebugMessage(2, 5, FColor::Red, "Could not find active camera.");
+					GEngine->AddOnScreenDebugMessage(3, 5, FColor::Red, "Could not find active camera.");
 				}
 			}
 		}
@@ -265,9 +269,12 @@ void ACMirror::CheckDynamicResolution()
 	}
 
 	const float DistanceSquared = FVector::DistSquared(GetActorLocation(), ActiveCamera->GetComponentLocation());
+	const float DynamicCaptureRangeStartSquared = FMath::Square(DynamicCaptureRangeStart);
+	const float DynamicCaptureRangeEndSquared = FMath::Square(DynamicCaptureRangeEnd);
+
 	float NewCaptureQuality = UKismetMathLibrary::MapRangeClamped(DistanceSquared,
-	                                                              FMath::Square(DynamicCaptureRangeStart),
-	                                                              FMath::Square(DynamicCaptureRangeEnd),
+	                                                              DynamicCaptureRangeStartSquared,
+	                                                              DynamicCaptureRangeEndSquared,
 	                                                              InitialCaptureQuality,
 	                                                              LowestDynamicCaptureQuality);
 
@@ -289,6 +296,13 @@ void ACMirror::CheckDynamicResolution()
 		{
 			GEngine->ForceGarbageCollection();
 		}
+	}
+
+	if (bDisplayDynamicCaptureQuality)
+	{
+		const FString MirrorNameAndQuality = GetActorNameOrLabel() + ", " + FString::Printf(TEXT("%f"), CaptureQuality);
+		GEngine->AddOnScreenDebugMessage(5, DynamicCaptureCheckInterval, FColor::Purple,
+		                                 MirrorNameAndQuality);
 	}
 }
 
@@ -471,6 +485,7 @@ void ACMirror::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEven
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
 	LowestDynamicCaptureQuality = FMath::Clamp(LowestDynamicCaptureQuality, 0.1, CaptureQuality);
+
 	if (!bCullingEnabled)
 	{
 		bShowCullingPlanes = false;

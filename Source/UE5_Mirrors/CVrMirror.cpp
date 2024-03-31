@@ -32,7 +32,6 @@ ACVrMirror::ACVrMirror()
 	SceneCaptureRightEye->bCaptureEveryFrame = false;
 	SceneCaptureRightEye->bCaptureOnMovement = false;
 
-	InitialCaptureQuality = CaptureQuality;
 }
 
 void ACVrMirror::OnViewportResize(FViewport* Viewport, uint32)
@@ -66,6 +65,7 @@ void ACVrMirror::BeginPlay()
 		}
 	}
 
+	InitialCaptureQuality = CaptureQuality;
 	FindActiveCamera();
 	SetupCaptureTriggers();
 
@@ -111,8 +111,12 @@ void ACVrMirror::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CaptureScene();
-	FString Bla = GetActorNameOrLabel() + ", " + FString::FromInt(NumActiveCaptureTriggers);
-	// GEngine->AddOnScreenDebugMessage(FMath::Rand(), -1, FColor::Purple, Bla);
+	
+	if (bDisplayNumOfActiveTriggers)
+	{
+		const FString MirrorNameAndTriggerAmount = GetActorNameOrLabel() + ", " + FString::FromInt(NumActiveCaptureTriggers);
+		GEngine->AddOnScreenDebugMessage(5, -1, FColor::Purple, MirrorNameAndTriggerAmount);
+	}
 }
 
 void ACVrMirror::Init()
@@ -212,7 +216,7 @@ void ACVrMirror::SetupCaptureTriggers()
 			}
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(4, 5, FColor::Red,
+				GEngine->AddOnScreenDebugMessage(3, 5, FColor::Red,
 				                                 "No PlayerController during SetupCaptureTriggers()");
 			}
 		}
@@ -530,7 +534,7 @@ float ACVrMirror::GetIpdCm() const
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(3, 5, FColor::Red,
+	GEngine->AddOnScreenDebugMessage(4, 5, FColor::Red,
 	                                 "Could not get correct Ipd distance, defaulting to 6.4. Set CustomIpdDistance instead?");
 	return 6.4;
 }
@@ -576,6 +580,11 @@ void ACVrMirror::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEv
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	LowestDynamicCaptureQuality = FMath::Clamp(LowestDynamicCaptureQuality, 0.1, CaptureQuality);
+
+	if (!bCullingEnabled)
+	{
+		bShowCullingPlanes = false;
+	}
 }
 
 #endif
