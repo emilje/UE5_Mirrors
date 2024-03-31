@@ -131,10 +131,6 @@ void ACVrMirror::Init()
 	RenderTargetLeftEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
 	RenderTargetRightEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
 
-	GEngine->AddOnScreenDebugMessage(15, 5, FColor::Red, Resolution.ToString());
-	GEngine->AddOnScreenDebugMessage(16, 5, FColor::Red, FString::FromInt(RenderTargetWidth * RenderTargetHeight));
-	GEngine->AddOnScreenDebugMessage(17, 5, FColor::Red, bIsMobileMultiView ? "Multi view on" : "Multi view off");
-
 	SceneCaptureLeftEye->TextureTarget = RenderTargetLeftEye;
 	SceneCaptureLeftEye->FOVAngle = HorizontalFov;
 
