@@ -90,6 +90,10 @@ protected:
 	// Capture resolution will be at lowest quality at and beyond this distance.
 	UPROPERTY(EditAnywhere, meta=(EditCondition=bEnableDynamicCaptureResolution))
 	float DynamicCaptureRangeEnd = 2500;
+	
+	// Capture resolution will be at lowest quality at and beyond this distance.
+	UPROPERTY(EditAnywhere, meta=(EditCondition=bEnableDynamicCaptureResolution))
+	bool bDisplayDynamicCaptureQuality = false;
 
 	// Interpupillary distance in centimeters. 0 for automatic.
 	UPROPERTY(EditAnywhere)

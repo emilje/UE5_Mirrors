@@ -307,14 +307,8 @@ void ACVrMirror::CheckDynamicResolution()
 		const int32 RenderTargetWidth = Resolution.X * CaptureQuality * (bIsMobileMultiView ? 1 : 0.5);
 		const int32 RenderTargetHeight = Resolution.Y * CaptureQuality;
 
-		RenderTargetLeftEye =
-			UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
-		RenderTargetLeftEye->AddressX = TA_Clamp;
-		RenderTargetLeftEye->AddressY = TA_Clamp;
-		RenderTargetRightEye = UKismetRenderingLibrary::CreateRenderTarget2D(
-			this, RenderTargetWidth, RenderTargetHeight);
-		RenderTargetRightEye->AddressX = TA_Clamp;
-		RenderTargetRightEye->AddressY = TA_Clamp;
+		RenderTargetLeftEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
+		RenderTargetRightEye = UKismetRenderingLibrary::CreateRenderTarget2D(this, RenderTargetWidth, RenderTargetHeight);
 
 		SceneCaptureLeftEye->TextureTarget = RenderTargetLeftEye;
 		SceneCaptureRightEye->TextureTarget = RenderTargetRightEye;
@@ -328,6 +322,13 @@ void ACVrMirror::CheckDynamicResolution()
 		{
 			GEngine->ForceGarbageCollection();
 		}
+	}
+
+	if (bDisplayDynamicCaptureQuality)
+	{
+		const FString MirrorNameAndQuality = GetActorNameOrLabel() + ", " + FString::Printf(TEXT("%f"), CaptureQuality);
+		GEngine->AddOnScreenDebugMessage(6, DynamicCaptureCheckInterval, FColor::Purple,
+										 MirrorNameAndQuality);
 	}
 }
 
