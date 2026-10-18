@@ -123,7 +123,7 @@ protected:
 	TObjectPtr<UStaticMeshComponent> MirrorMesh;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UMaterial> MirrorMaterial;
+	TObjectPtr<UMaterialInterface> MirrorMaterial;
 
 private:
 	virtual void Destroyed() override;
